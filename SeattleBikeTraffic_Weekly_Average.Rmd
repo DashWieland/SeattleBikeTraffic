@@ -128,15 +128,4 @@ g <- ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) 
 ggsave("test.png", width = 25, height = 20, units = "cm")
 ```
 
-```{r}
-ggsave("test.png")
-```
-
-
-```{r}
-aspect_ratio <- 2.5
-height <- 7
-ggsave(g, height = 7 , width = 7 * aspect_ratio)
-```
-
 
