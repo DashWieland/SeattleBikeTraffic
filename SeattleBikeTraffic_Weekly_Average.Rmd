@@ -42,18 +42,19 @@ bike_taffic_grouped <- bike_taffic_dated %>%
 ```
 
 ```{r}
-p <- ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) + 
+ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) + 
   geom_line(aes(color = crossing, group = crossing), size = 1) +
   geom_point(aes(color = crossing)) + 
   scale_color_brewer(palette="Set3") +
   coord_polar() + 
   theme(plot.subtitle = element_text(family = "Lato", 
                                      colour = "oldlace",
-                                     hjust = 0.08),
+                                     size = 12,
+                                     vjust = -3),
     plot.caption = element_text(family = "Lato", 
                                 size = 8, 
                                 colour = "oldlace",
-                                hjust = 6.25), 
+                                hjust = 1.55), 
     axis.ticks = element_line(colour = "aliceblue", 
                               size = 1,
                               linetype = "dashed"),
@@ -62,10 +63,11 @@ p <- ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) 
                                     linetype = "dotted"), 
     panel.grid.minor = element_line(linetype = "blank"), 
     axis.title = element_text(family = "Lato", 
-                              face = "bold", 
+                              face = "bold",
+                              size = 12,
                               colour = "oldlace"), 
     axis.text = element_text(family = "Lato Medium",
-                             size = 11, 
+                             size = 12, 
                              face = "bold", 
                              colour = "oldlace",
                              hjust = 1, 
@@ -74,11 +76,11 @@ p <- ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) 
                                colour = "oldlace"), 
     axis.text.y = element_text(family = "Lato Medium"), 
     plot.title = element_text(family = "Lato",
-                              size = 14,
+                              size = 20,
                               face = "bold",
                               colour = "oldlace", 
-                              hjust = -4, 
-                              vjust = 0.35), 
+                              hjust = -.01, 
+                              vjust = -2), 
     legend.text = element_text(family = "Lato", 
                                colour = "oldlace"), 
     legend.title = element_text(face = "bold",
@@ -87,13 +89,37 @@ p <- ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) 
     panel.background = element_rect(fill = "darkseagreen4"), 
     plot.background = element_rect(fill = "darkseagreen4"),
     legend.key = element_blank(),
-    legend.background = element_rect(fill = "darkseagreen4"),
+    legend.background = element_rect(fill = "darkseagreen4")) +
   labs(title = "Weekly Average Bike Traffic in Seattle", 
        x = "Week of Year",
        y = "Average Bike Count", 
        colour = "Crossing", 
        subtitle = "The average number of bikes passing each counting station, aggregated by week of the year",
-       caption = "Made by @DashWieland for #TidyTuesday")
+       caption = "Made by @DashWieland for #TidyTuesday") + 
+  geom_vline(xintercept=1, colour="oldlace") +
+  geom_text(aes(x=1,
+                label="January",
+                y=20),
+            colour="oldlace",
+            angle=90,
+            hjust = -2.2,
+            vjust = -.5) + 
+  geom_vline(xintercept=18, colour="oldlace") +
+  geom_text(aes(x=18,
+                label="Late April/Early May)",
+                y=20),
+            colour="oldlace",
+            angle=-27,
+            hjust = -0.82,
+            vjust = -.3) +   
+  geom_vline(xintercept=34, colour="oldlace") + 
+  geom_text(aes(x=34,
+                label="Late August",
+                y=20), 
+            colour="oldlace",
+            angle= 43,
+            hjust = 2.5,
+            vjust = -.75)
 ```
 
 ```{r}
@@ -103,7 +129,6 @@ p + geom_vline(xintercept=1, colour="oldlace") +
                 y=20),
             colour="oldlace",
             angle=90,
-            text=element_text(size=4),
             hjust = -1.55,
             vjust = .2) + 
   geom_vline(xintercept=18, colour="oldlace") +
@@ -123,4 +148,6 @@ p + geom_vline(xintercept=1, colour="oldlace") +
             hjust = 2,
             vjust = .25)
 ```
+
+
 
