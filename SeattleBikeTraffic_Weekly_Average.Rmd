@@ -16,8 +16,7 @@ This
 suppressPackageStartupMessages(library(dplyr))
 library(lubridate)
 library(ggplot2)
-library(ggthemes)
-
+library(RColorBrewer)
 ```
 
 ```{r cars}
@@ -37,20 +36,16 @@ bike_taffic_dated <- bike_traffic %>%
 ```
 
 ```{r}
-bike_taffic_dated$log_bike_count[is.finite(bike_taffic_dated$log_bike_count) == FALSE] <- 0
-```
-
-```{r}
 bike_taffic_grouped <- bike_taffic_dated %>%
   group_by(floor_week_year, crossing) %>%
   summarise(mean_bike_count = mean(bike_count, na.rm = TRUE))
 ```
 
-
 ```{r}
-ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) + 
-  geom_line(aes(color = crossing), size = 1) +
+p <- ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) + 
+  geom_line(aes(color = crossing, group = crossing), size = 1) +
   geom_point(aes(color = crossing)) + 
+  scale_color_brewer(palette="Set3") +
   coord_polar() + 
   theme(plot.subtitle = element_text(family = "Lato", 
                                      colour = "oldlace",
@@ -92,12 +87,40 @@ ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) +
     panel.background = element_rect(fill = "darkseagreen4"), 
     plot.background = element_rect(fill = "darkseagreen4"),
     legend.key = element_blank(),
-    legend.background = element_rect(fill = "darkseagreen4")) +
+    legend.background = element_rect(fill = "darkseagreen4"),
   labs(title = "Weekly Average Bike Traffic in Seattle", 
        x = "Week of Year",
        y = "Average Bike Count", 
        colour = "Crossing", 
        subtitle = "The average number of bikes passing each counting station, aggregated by week of the year",
        caption = "Made by @DashWieland for #TidyTuesday")
+```
+
+```{r}
+p + geom_vline(xintercept=1, colour="oldlace") +
+  geom_text(aes(x=1,
+                label="\nJanuary",
+                y=20),
+            colour="oldlace",
+            angle=90,
+            text=element_text(size=4),
+            hjust = -1.55,
+            vjust = .2) + 
+  geom_vline(xintercept=18, colour="oldlace") +
+  geom_text(aes(x=18,
+                label="Late April/Early May)",
+                y=20),
+            colour="oldlace",
+            angle=-27,
+            hjust = -0.6,
+            vjust = .4) +   
+  geom_vline(xintercept=34, colour="oldlace") + 
+  geom_text(aes(x=34,
+                label="Late August",
+                y=20), 
+            colour="oldlace",
+            angle= 43,
+            hjust = 2,
+            vjust = .25)
 ```
 
