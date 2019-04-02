@@ -1,0 +1,103 @@
+---
+title: "SeattleBikeTraffic"
+author: "Dash Wieland"
+date: "4/1/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+library(lubridate)
+library(ggplot2)
+library(ggthemes)
+
+```
+
+```{r cars}
+bike_traffic <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-02/bike_traffic.csv", col_types = 'cccdd') 
+```
+
+```{r}
+bike_traffic$lubri_date = mdy_hms(bike_traffic$date)
+```
+
+```{r}
+bike_taffic_dated <- bike_traffic %>%
+  mutate(floor_month_year = month(lubri_date, label = TRUE),
+         floor_week_year = week(lubri_date),
+         floor_day_year = yday(lubri_date), 
+         log_bike_count = log(bike_count))
+```
+
+```{r}
+bike_taffic_dated$log_bike_count[is.finite(bike_taffic_dated$log_bike_count) == FALSE] <- 0
+```
+
+```{r}
+bike_taffic_grouped <- bike_taffic_dated %>%
+  group_by(floor_week_year, crossing) %>%
+  summarise(mean_bike_count = mean(bike_count, na.rm = TRUE))
+```
+
+
+```{r}
+ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) + 
+  geom_line(aes(color = crossing), size = 1) +
+  geom_point(aes(color = crossing)) + 
+  coord_polar() + 
+  theme(plot.subtitle = element_text(family = "Lato", 
+                                     colour = "oldlace",
+                                     hjust = 0.08),
+    plot.caption = element_text(family = "Lato", 
+                                size = 8, 
+                                colour = "oldlace",
+                                hjust = 6.25), 
+    axis.ticks = element_line(colour = "aliceblue", 
+                              size = 1,
+                              linetype = "dashed"),
+    panel.grid.major = element_line(colour = "darkolivegreen3", 
+                                    size = 0.4,
+                                    linetype = "dotted"), 
+    panel.grid.minor = element_line(linetype = "blank"), 
+    axis.title = element_text(family = "Lato", 
+                              face = "bold", 
+                              colour = "oldlace"), 
+    axis.text = element_text(family = "Lato Medium",
+                             size = 11, 
+                             face = "bold", 
+                             colour = "oldlace",
+                             hjust = 1, 
+                             vjust = 0.75), 
+    axis.text.x = element_text(family = "Lato Medium", 
+                               colour = "oldlace"), 
+    axis.text.y = element_text(family = "Lato Medium"), 
+    plot.title = element_text(family = "Lato",
+                              size = 14,
+                              face = "bold",
+                              colour = "oldlace", 
+                              hjust = -4, 
+                              vjust = 0.35), 
+    legend.text = element_text(family = "Lato", 
+                               colour = "oldlace"), 
+    legend.title = element_text(face = "bold",
+                                family = "Lato",
+                                colour = "oldlace"), 
+    panel.background = element_rect(fill = "darkseagreen4"), 
+    plot.background = element_rect(fill = "darkseagreen4"),
+    legend.key = element_blank(),
+    legend.background = element_rect(fill = "darkseagreen4")) +
+  labs(title = "Weekly Average Bike Traffic in Seattle", 
+       x = "Week of Year",
+       y = "Average Bike Count", 
+       colour = "Crossing", 
+       subtitle = "The average number of bikes passing each counting station, aggregated by week of the year",
+       caption = "Made by @DashWieland for #TidyTuesday")
+```
+
