@@ -9,9 +9,14 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Weekly bike traffic in Seattle
+This week's #TidyTuesday dataset is bike traffic in Seattle. Interestingly, 
+this isn't geographic data-though we could add that by finding the coordinates
+of the counting stations-so instead I thought it might be interesting to
+capture the seasonality of bike traffic at different counting stations. 
 
-This
+Start by loading the required packages and downloading the data from GitHub. 
+
 ```{r}
 suppressPackageStartupMessages(library(dplyr))
 library(lubridate)
@@ -23,10 +28,22 @@ library(RColorBrewer)
 bike_traffic <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-02/bike_traffic.csv", col_types = 'cccdd') 
 ```
 
+## Prepping data for plotting
+### Formatting dates with lubridate
+The first thing to do is get our dates in a workable format. Per the readme
+file for this dataset, the dates are in M/D/Y H/M/S format, so we'll use 
+the mdy_hms() function from the lubridate package to get an actual date column. 
 ```{r}
 bike_traffic$lubri_date = mdy_hms(bike_traffic$date)
 ```
 
+### New variables with mutate()
+Now that we have a date, let's give ourselves some options for plotting. The 
+lubridate package has handy "floor" functions that round a date to the 
+specied unit (e.g., month, day, or year). We'll create floored month, week, 
+and year columns, as well as a log of the bike count since there are some 
+extreme outliers. Note: we won't use all of these in the resulting plot, but we
+could if we wanted!
 ```{r}
 bike_taffic_dated <- bike_traffic %>%
   mutate(floor_month_year = month(lubri_date, label = TRUE),
@@ -35,11 +52,25 @@ bike_taffic_dated <- bike_traffic %>%
          log_bike_count = log(bike_count))
 ```
 
+### Grouping and summarising
+Now let's group by year and crossing before summarizing our mean bike count. 
+We'll get back a new column from the mutate function labeled "mean_bike_count." 
+This is the mean bike count for each crossing across all years. 
 ```{r}
 bike_taffic_grouped <- bike_taffic_dated %>%
   group_by(floor_week_year, crossing) %>%
   summarise(mean_bike_count = mean(bike_count, na.rm = TRUE))
 ```
+
+## Ready to plot
+I won't explain the inner workings of this code at the moment, but rest assured
+that most of it is styling. The meat of the plot is charting each station's
+average bike count in a line chart (grouped by color and counting station) and
+then wrapping that line chart into a circle using coord_polor(). 
+
+The other item of note is that the annotations for the time of year are added
+with the geom_vline() and geom_text() arguements at the end. Those can be
+finicky to control, so customize at your own risk!
 
 ```{r}
 g <- ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) + 
@@ -125,7 +156,7 @@ g <- ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) 
 
 
 ```{r}
-ggsave("test.png", width = 25, height = 20, units = "cm")
+ggsave("avg_weekly_bike_traffic.png", width = 25, height = 20, units = "cm")
 ```
 
 
