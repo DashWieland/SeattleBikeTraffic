@@ -66,7 +66,7 @@ bike_taffic_grouped <- bike_taffic_dated %>%
 I won't explain the inner workings of this code at the moment, but rest assured
 that most of it is styling. The meat of the plot is charting each station's
 average bike count in a line chart (grouped by color and counting station) and
-then wrapping that line chart into a circle using coord_polor(). 
+then wrapping that line chart into a circle using coord_polar(). 
 
 The other item of note is that the annotations for the time of year are added
 with the geom_vline() and geom_text() arguements at the end. Those can be
