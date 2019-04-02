@@ -42,7 +42,7 @@ bike_taffic_grouped <- bike_taffic_dated %>%
 ```
 
 ```{r}
-ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) + 
+g <- ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) + 
   geom_line(aes(color = crossing, group = crossing), size = 1) +
   geom_point(aes(color = crossing)) + 
   scale_color_brewer(palette="Set3") +
@@ -54,7 +54,7 @@ ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) +
     plot.caption = element_text(family = "Lato", 
                                 size = 8, 
                                 colour = "oldlace",
-                                hjust = 1.55), 
+                                hjust = 1.65), 
     axis.ticks = element_line(colour = "aliceblue", 
                               size = 1,
                               linetype = "dashed"),
@@ -89,11 +89,12 @@ ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) +
     panel.background = element_rect(fill = "darkseagreen4"), 
     plot.background = element_rect(fill = "darkseagreen4"),
     legend.key = element_blank(),
-    legend.background = element_rect(fill = "darkseagreen4")) +
+    legend.background = element_rect(fill = "darkseagreen4"),
+    plot.margin=grid::unit(c(0,0,0,2), "mm")) +
   labs(title = "Weekly Average Bike Traffic in Seattle", 
        x = "Week of Year",
        y = "Average Bike Count", 
-       colour = "Crossing", 
+       colour = "Crossing / Counting Station", 
        subtitle = "The average number of bikes passing each counting station, aggregated by week of the year",
        caption = "Made by @DashWieland for #TidyTuesday") + 
   geom_vline(xintercept=1, colour="oldlace") +
@@ -106,48 +107,36 @@ ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) +
             vjust = -.5) + 
   geom_vline(xintercept=18, colour="oldlace") +
   geom_text(aes(x=18,
-                label="Late April/Early May)",
-                y=20),
-            colour="oldlace",
-            angle=-27,
-            hjust = -0.82,
-            vjust = -.3) +   
-  geom_vline(xintercept=34, colour="oldlace") + 
-  geom_text(aes(x=34,
-                label="Late August",
-                y=20), 
-            colour="oldlace",
-            angle= 43,
-            hjust = 2.5,
-            vjust = -.75)
-```
-
-```{r}
-p + geom_vline(xintercept=1, colour="oldlace") +
-  geom_text(aes(x=1,
-                label="\nJanuary",
-                y=20),
-            colour="oldlace",
-            angle=90,
-            hjust = -1.55,
-            vjust = .2) + 
-  geom_vline(xintercept=18, colour="oldlace") +
-  geom_text(aes(x=18,
-                label="Late April/Early May)",
+                label="Late April / Early May",
                 y=20),
             colour="oldlace",
             angle=-27,
             hjust = -0.6,
-            vjust = .4) +   
+            vjust = -.4) +   
   geom_vline(xintercept=34, colour="oldlace") + 
   geom_text(aes(x=34,
                 label="Late August",
                 y=20), 
             colour="oldlace",
             angle= 43,
-            hjust = 2,
-            vjust = .25)
+            hjust = 2.15,
+            vjust = -1)
 ```
 
+
+```{r}
+ggsave("test.png", width = 25, height = 20, units = "cm")
+```
+
+```{r}
+ggsave("test.png")
+```
+
+
+```{r}
+aspect_ratio <- 2.5
+height <- 7
+ggsave(g, height = 7 , width = 7 * aspect_ratio)
+```
 
 
