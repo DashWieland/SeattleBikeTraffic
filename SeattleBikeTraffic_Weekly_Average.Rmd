@@ -17,8 +17,8 @@ capture the seasonality of bike traffic at different counting stations.
 
 Start by loading the required packages and downloading the data from GitHub. 
 
-```{r}
-suppressPackageStartupMessages(library(dplyr))
+```{r message=F, warning=F}
+library(dplyr)
 library(lubridate)
 library(ggplot2)
 library(RColorBrewer)
@@ -154,9 +154,7 @@ g <- ggplot(bike_taffic_grouped, aes(x = floor_week_year, y = mean_bike_count)) 
             vjust = -1)
 ```
 
-
+Now save our new plot to a .png for sharing. 
 ```{r}
 ggsave("avg_weekly_bike_traffic.png", width = 25, height = 20, units = "cm")
 ```
-
-
